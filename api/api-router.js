@@ -5,27 +5,19 @@ const usersRouter = require('../users/users-router.js');
 
 router.use('/auth', authRouter);
 router.use('/users', usersRouter);
+const bcrypt = require('bcryptjs');
+
 
 router.get('/', (req, res) => {
 	res.json({ api: "It's alive" });
 });
 
 router.post('/hash', (req, res) => {
-	const credentials = req.body;
+	const pw = req.body.password;
 
-	const hash = bcrypt.hashSync(credentials.password, 14)
-		.then(hashed => {
-			credentials.password = hash
-			// check that passwords match
-			if (hash) {
-				res.status(200).json({ password: credentials, hash: hash });
-			} else {
+	const hash = bcrypt.hashSync(pw, 14)
 
-				res.status(401).json({ message: 'Invalid Credentials' });
-			}
-		})
-		.catch(error => {
-			res.status(500).json(error);
-		});
+	res.status(200).json({ message: pw, hash: hash });
+
 });
 module.exports = router;
